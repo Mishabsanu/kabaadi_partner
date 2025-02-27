@@ -22,31 +22,27 @@ export default function EnterMobile() {
         </h1>
 
         {/* Mobile Input Box */}
-        <div className="flex items-center border border-gray-400 rounded-lg px-3 py-2 w-full">
-          <select
-            className="bg-transparent text-black font-semibold outline-none"
-            value={countryCode}
-            onChange={(e) => setCountryCode(e.target.value)}
-          >
-            <option value="+91">+91 🇮🇳</option>
-            <option value="+1">+1 🇺🇸</option>
-            <option value="+44">+44 🇬🇧</option>
-            <option value="+61">+61 🇦🇺</option>
-          </select>|
+        <div className="flex items-center border border-gray-400 rounded-lg px-3 py-1 w-full">
+          <span className="text-black">+91</span>
+          <span className="mx-2 text-black">|</span>
           <input
             type="tel"
-            className="ml-3 outline-none flex-1 text-lg w-full"
+            className="outline-none flex-1 text-lg w-full"
             placeholder="Enter mobile number"
             value={mobile}
             maxLength={10}
-            onChange={(e) => setMobile(e.target.value.replace(/\D/, ""))}
+            onChange={(e) => {
+              const onlyNums = e.target.value.replace(/\D/g, ""); // Allow only digits
+              setMobile(onlyNums.slice(0, 10)); // Enforce max length of 10
+            }}
           />
         </div>
 
-        {/* Continue Button */}
         <button
-          className={`w-full mt-6 py-3 rounded-lg text-white text-lg font-semibold ${
-            mobile.length === 10 ? "bg-[#8B008B] hover:bg-green-700" : "bg-gray-300 cursor-not-allowed"
+          className={`w-full mt-6 py-2 rounded-lg text-white font-medium font-semibold ${
+            mobile.length === 10
+              ? "bg-[#8B008B]"
+              : "bg-[#8B008B] cursor-not-allowed"
           }`}
           onClick={handleNext}
           disabled={mobile.length !== 10}
@@ -67,7 +63,8 @@ export default function EnterMobile() {
           and{" "}
           <span className="text-[#8B008B] underline cursor-pointer">
             Content Policy
-          </span>.
+          </span>
+          .
         </p>
       </div>
     </div>

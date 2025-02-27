@@ -3,38 +3,65 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 export default function EnterDetails() {
-  const [name, setName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [name, setName] = useState("");
+  const [lastName, setLastName] = useState("");
   const router = useRouter();
 
   const handleContinue = () => {
     if (name && lastName) {
-      router.push('/vehicle/add-vehicle');
+      router.push("/vehicle/add-vehicle");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen p-4">
+    <div className="flex flex-col min-h-screen px-6 py-3">
+      {/* Back Button */}
+      <button
+        onClick={() => router.back()}
+        className="text-left text-black text-lg mb-3"
+      >
+        ← Back
+      </button>
 
-      <h1 className="text-xl font-bold mb-4">Enter Your Details</h1>
-      <input 
-        type="text" 
-        className="border p-2 rounded w-64 text-center" 
-        placeholder="First Name" 
-        value={name} 
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input 
-        type="text" 
-        className="border p-2 rounded w-64 text-center mt-2" 
-        placeholder="Last Name" 
-        value={lastName} 
-        onChange={(e) => setLastName(e.target.value)}
-      />
-      <button 
-        className="bg-blue-500 text-white p-2 rounded mt-4" 
+      {/* Title */}
+      <h1 className="text-2xl font-semibold mb-4 mt-5">Enter your details</h1>
+
+      {/* Name Input Fields */}
+      <div className="mb-3">
+        <label className="text-base font-medium">Name</label>
+        <div className="flex gap-2 mt-1">
+          <input
+            type="text"
+            className="border border-gray-400 rounded-md p-2 w-full text-base"
+            placeholder="First Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <input
+            type="text"
+            className="border border-gray-400 rounded-md p-2 w-full text-base"
+            placeholder="Last Name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {/* Continue Button */}
+      <button
+        className="bg-[#8B008B] text-white font-medium text-base py-2 rounded-md w-full"
         onClick={handleContinue}
-      >Continue</button>
+      >
+        Continue
+      </button>
+
+      {/* Referral Code */}
+      <p className="text-center mt-3 text-gray-600 text-sm">
+        Have a Referral Code?
+        <span className="text-[#8B008B] font-medium cursor-pointer ml-1">
+          Apply a Referral Code
+        </span>
+      </p>
     </div>
   );
 }
