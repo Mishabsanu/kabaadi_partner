@@ -7,7 +7,7 @@ export default function Home() {
 
   useEffect(() => {
     setTimeout(() => {
-      router.push("/auth/enter-mobile");
+      router.push("/language");
     }, 2000);
   }, []);
 

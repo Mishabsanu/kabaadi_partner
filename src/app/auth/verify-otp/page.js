@@ -44,7 +44,9 @@ export default function VerifyOTP() {
         </button>
 
         {/* Title & OTP Info */}
-        <h1 className="text-xl font-bold text-black mb-1 mt-5">Enter the OTP sent to</h1>
+        <h1 className="text-xl font-bold text-black mb-1 mt-5">
+          Enter the OTP sent to
+        </h1>
         <p className="text-xl font-bold text-black mb-3">9633123157</p>
 
         {/* OTP Input Box */}
@@ -61,7 +63,11 @@ export default function VerifyOTP() {
 
         {/* Continue Button */}
         <button
-          className="bg-[#8B008B] text-white w-full py-2 rounded-md mt-4 text-base font-semibold"
+          className={`w-full mt-6 py-2 rounded-lg text-white font-medium font-semibold ${
+            otp.length === 6
+              ? "bg-[#8B008B]"
+              : "bg-[#af6aaf] cursor-not-allowed"
+          }`}
           onClick={handleVerify}
           disabled={otp.length !== 6}
         >

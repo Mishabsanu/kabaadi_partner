@@ -23,7 +23,7 @@ export default function UnderReview() {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col items-center text-center mt-20 gap-4">
+      <div className="flex flex-col items-center text-center mt-25 gap-4">
         {/* Clock Icon */}
         <div className="w-20 h-20 flex items-center justify-center bg-yellow-200 rounded-full">
           <svg
@@ -50,7 +50,7 @@ export default function UnderReview() {
       </div>
 
       {/* Contact Section */}
-      <div className="w-full max-w-sm mt-25">
+      <div className="w-full max-w-sm mt-40">
         <p className="text-xs text-gray-500 text-center">
           Here’s how you can contact us.
         </p>

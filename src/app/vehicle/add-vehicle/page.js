@@ -27,7 +27,12 @@ export default function AddVehicle() {
   const requiresVehicleNumber = selectedVehicle !== 1 && selectedVehicle !== 2;
 
   const handleSubmit = () => {
-    if (!selectedVehicle || !vehicleName || (requiresVehicleNumber && !vehicleNumber)) return;
+    if (
+      !selectedVehicle ||
+      !vehicleName ||
+      (requiresVehicleNumber && !vehicleNumber)
+    )
+      return;
     setIsModalOpen(true); // Show modal after submission
   };
 
@@ -52,7 +57,9 @@ export default function AddVehicle() {
             key={vehicle.id}
             onClick={() => setSelectedVehicle(vehicle.id)}
             className={`border rounded-lg p-4 flex flex-col items-center cursor-pointer transition-all ${
-              selectedVehicle === vehicle.id ? "border-purple-400 bg-purple-200" : "border-gray-300"
+              selectedVehicle === vehicle.id
+                ? "border-purple-400 bg-purple-200"
+                : "border-gray-300"
             }`}
           >
             <span className="text-2xl">{vehicle.icon}</span>
@@ -86,14 +93,18 @@ export default function AddVehicle() {
       )}
 
       {/* Select Weight Equipment */}
-      <h2 className="mt-6 text-lg font-semibold">Select your weight equipment</h2>
+      <h2 className="mt-6 text-lg font-semibold">
+        Select your weight equipment
+      </h2>
       <div className="mt-3 space-y-3">
         {weightEquipments.map((equipment) => (
           <div
             key={equipment.id}
             onClick={() => setSelectedEquipment(equipment.id)}
             className={`flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${
-              selectedEquipment === equipment.id ? "border-purple-500 bg-purple-100" : "border-gray-300"
+              selectedEquipment === equipment.id
+                ? "border-purple-500 bg-purple-100"
+                : "border-gray-300"
             }`}
           >
             <div className="flex items-center space-x-3">
@@ -102,10 +113,14 @@ export default function AddVehicle() {
             </div>
             <div
               className={`w-6 h-6 rounded-full border flex items-center justify-center ${
-                selectedEquipment === equipment.id ? "border-purple-500 bg-purple-500" : "border-gray-400"
+                selectedEquipment === equipment.id
+                  ? "border-purple-500 bg-purple-500"
+                  : "border-gray-400"
               }`}
             >
-              {selectedEquipment === equipment.id && <span className="text-white">✔</span>}
+              {selectedEquipment === equipment.id && (
+                <span className="text-white">✔</span>
+              )}
             </div>
           </div>
         ))}
@@ -114,9 +129,15 @@ export default function AddVehicle() {
       {/* Submit Button */}
       <button
         onClick={handleSubmit}
-        disabled={!selectedVehicle || !vehicleName || (requiresVehicleNumber && !vehicleNumber)}
+        disabled={
+          !selectedVehicle ||
+          !vehicleName ||
+          (requiresVehicleNumber && !vehicleNumber)
+        }
         className={`mt-6 w-full py-2 text-lg font-medium rounded-lg transition-all ${
-          selectedVehicle && vehicleName && (!requiresVehicleNumber || vehicleNumber)
+          selectedVehicle &&
+          vehicleName &&
+          (!requiresVehicleNumber || vehicleNumber)
             ? "bg-[#8B008B] text-white"
             : "bg-gray-300 text-gray-500 cursor-not-allowed"
         }`}
@@ -126,7 +147,7 @@ export default function AddVehicle() {
 
       {/* Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
+        <div className="fixed inset-0 flex items-center justify-center bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center">
             <div className="flex justify-center mb-4">
               <div className="bg-green-100 p-2 rounded-full">

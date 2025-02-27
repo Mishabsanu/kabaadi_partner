@@ -42,7 +42,7 @@ export default function EnterMobile() {
           className={`w-full mt-6 py-2 rounded-lg text-white font-medium font-semibold ${
             mobile.length === 10
               ? "bg-[#8B008B]"
-              : "bg-[#8B008B] cursor-not-allowed"
+              : "bg-[#af6aaf] cursor-not-allowed"
           }`}
           onClick={handleNext}
           disabled={mobile.length !== 10}
