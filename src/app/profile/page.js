@@ -41,7 +41,7 @@ export default function Profile() {
 
       {/* Profile Info */}
       <div className="flex flex-col items-center mt-5">
-        <div className="w-20 h-20 bg-green-200 text-green-700 rounded-full flex items-center justify-center text-2xl font-bold">
+        <div className="w-20 h-20 bg-[rgba(160,0,160,0.2)] text-purple-800  rounded-full flex items-center justify-center text-2xl font-bold">
           M
         </div>
         <h2 className="mt-3 text-lg font-bold text-gray-800">Mishab Sanu</h2>

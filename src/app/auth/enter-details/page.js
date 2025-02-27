@@ -49,7 +49,10 @@ export default function EnterDetails() {
 
       {/* Continue Button */}
       <button
-        className="bg-[#8B008B] text-white font-medium text-base py-2 rounded-md w-full"
+        className={`w-full mt-6 py-2 rounded-lg text-white font-medium ${
+          name && lastName ? "bg-[#8B008B]" : "bg-[#af6aaf] cursor-not-allowed"
+        }`}
+        // className="bg-[#8B008B] text-white font-medium text-base py-2 rounded-md w-full"
         onClick={handleContinue}
       >
         Continue

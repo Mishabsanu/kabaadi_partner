@@ -30,6 +30,7 @@ export default function AddVehicle() {
     if (
       !selectedVehicle ||
       !vehicleName ||
+      !selectedEquipment ||
       (requiresVehicleNumber && !vehicleNumber)
     )
       return;
@@ -132,14 +133,15 @@ export default function AddVehicle() {
         disabled={
           !selectedVehicle ||
           !vehicleName ||
-          (requiresVehicleNumber && !vehicleNumber)
+          !selectedEquipment ||
+          (requiresVehicleNumber && !vehicleNumber )
         }
-        className={`mt-6 w-full py-2 text-lg font-medium rounded-lg transition-all ${
+        className={`w-full mt-6 py-2 rounded-lg text-white font-medium font-semibold ${
           selectedVehicle &&
           vehicleName &&
-          (!requiresVehicleNumber || vehicleNumber)
-            ? "bg-[#8B008B] text-white"
-            : "bg-gray-300 text-gray-500 cursor-not-allowed"
+          (!requiresVehicleNumber || vehicleNumber || selectedEquipment)
+            ? "bg-[#8B008B]"
+            : "bg-[#af6aaf] cursor-not-allowed"
         }`}
       >
         Continue

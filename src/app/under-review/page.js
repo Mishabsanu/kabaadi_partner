@@ -15,7 +15,7 @@ export default function UnderReview() {
           <p className="text-sm text-gray-500">Pickup unit</p>
         </div>
         <button
-          className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-bold text-lg cursor-pointer"
+          className="w-10 h-10 bg-[rgba(160,0,160,0.2)] rounded-full flex items-center justify-center font-bold text-lg cursor-pointer"
           onClick={() => router.push("/profile")}
         >
           M
@@ -25,9 +25,9 @@ export default function UnderReview() {
       {/* Content */}
       <div className="flex flex-col items-center text-center mt-25 gap-4">
         {/* Clock Icon */}
-        <div className="w-20 h-20 flex items-center justify-center bg-yellow-200 rounded-full">
+        <div className="w-20 h-20 flex items-center justify-center bg-[rgba(160,0,160,0.2)] rounded-full">
           <svg
-            className="w-10 h-10 text-yellow-700"
+            className="w-10 h-10 text-purple-800 "
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
@@ -54,7 +54,7 @@ export default function UnderReview() {
         <p className="text-xs text-gray-500 text-center">
           Here’s how you can contact us.
         </p>
-        <button className="mt-3 w-full flex items-center justify-center bg-green-600 text-white font-medium py-3 rounded-lg shadow hover:bg-green-700 transition">
+        <button className="mt-3 w-full flex items-center justify-center bg-[#8B008B] text-white font-medium py-3 rounded-lg shadow  transition">
           <FaPhoneAlt className="mr-2" />
           Contact Us
         </button>

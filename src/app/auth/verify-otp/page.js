@@ -63,7 +63,7 @@ export default function VerifyOTP() {
 
         {/* Continue Button */}
         <button
-          className={`w-full mt-6 py-2 rounded-lg text-white font-medium font-semibold ${
+          className={`w-full mt-6 py-2 rounded-lg text-white font-medium ${
             otp.length === 6
               ? "bg-[#8B008B]"
               : "bg-[#af6aaf] cursor-not-allowed"
