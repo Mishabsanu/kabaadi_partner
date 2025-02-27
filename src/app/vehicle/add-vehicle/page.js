@@ -134,7 +134,7 @@ export default function AddVehicle() {
           !selectedVehicle ||
           !vehicleName ||
           !selectedEquipment ||
-          (requiresVehicleNumber && !vehicleNumber )
+          (requiresVehicleNumber && !vehicleNumber)
         }
         className={`w-full mt-6 py-2 rounded-lg text-white font-medium font-semibold ${
           selectedVehicle &&

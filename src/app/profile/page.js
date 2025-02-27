@@ -9,10 +9,12 @@ import {
   FaHeadset,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { setLogout } from "@/redux/auth/authSlice";
 
 export default function Profile() {
   const router = useRouter();
-
+  const user = useSelector((state) => state?.auth?.current_user);
   const menuItems = [
     { icon: <FaHome />, label: "My materials", path: "/materials" },
     { icon: <FaBox />, label: "Requests", path: "/requests" },
@@ -26,7 +28,9 @@ export default function Profile() {
       color: "text-red-500",
     },
   ];
-
+  const handleLogout = () => {
+    dispatch(setLogout({ current_user: null }));
+  };
   return (
     <div className="flex flex-col items-center min-h-screen bg-gray-50 px-4 py-6">
       {/* Back Button */}
@@ -41,11 +45,14 @@ export default function Profile() {
 
       {/* Profile Info */}
       <div className="flex flex-col items-center mt-5">
-        <div className="w-20 h-20 bg-[rgba(160,0,160,0.2)] text-purple-800  rounded-full flex items-center justify-center text-2xl font-bold">
-          M
+        <div className="w-20 h-20 bg-[rgba(160,0,160,0.2)] text-purple-800 rounded-full flex items-center justify-center text-2xl font-bold">
+          {user?.name?.charAt(0).toUpperCase()}
         </div>
-        <h2 className="mt-3 text-lg font-bold text-gray-800">Mishab Sanu</h2>
-        <p className="text-gray-600 text-sm">+91 9633123157</p>
+
+        <h2 className="mt-3 text-lg font-bold text-gray-800">
+          {user?.name} {user?.lastName}
+        </h2>
+        <p className="text-gray-600 text-sm">+91 {user?.mobile}</p>
       </div>
 
       {/* Menu List */}

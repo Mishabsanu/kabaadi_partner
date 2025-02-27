@@ -1,12 +1,14 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-
+import { useSearchParams } from "next/navigation";
 export default function VerifyOTP() {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(90); // 90 seconds countdown
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const mobile = searchParams.get("mobile");
 
   useEffect(() => {
     if (timer > 0) {
@@ -47,7 +49,7 @@ export default function VerifyOTP() {
         <h1 className="text-xl font-bold text-black mb-1 mt-5">
           Enter the OTP sent to
         </h1>
-        <p className="text-xl font-bold text-black mb-3">9633123157</p>
+        <p className="text-xl font-bold text-black mb-3">{mobile}</p>
 
         {/* OTP Input Box */}
         <div className="border-2 border-[#8B008B] p-1 rounded-md text-center">

@@ -1,14 +1,18 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { setUserDetails } from "@/redux/auth/authSlice";
+import { useDispatch } from "react-redux";
 
 export default function EnterDetails() {
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const handleContinue = () => {
     if (name && lastName) {
+      dispatch(setUserDetails({ name, lastName }));
       router.push("/vehicle/add-vehicle");
     }
   };

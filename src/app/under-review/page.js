@@ -3,22 +3,26 @@
 import { useRouter } from "next/navigation";
 import React from "react";
 import { FaPhoneAlt } from "react-icons/fa";
+import { useSelector } from "react-redux";
 
 export default function UnderReview() {
   const router = useRouter();
+  const user = useSelector((state) => state?.auth?.current_user);
   return (
     <div className="flex flex-col items-center mt-5 justify-start min-h-screen bg-gray-50 px-4">
       {/* Header */}
       <div className="w-full max-w-sm bg-white shadow-md rounded-lg p-4 flex items-center justify-between">
         <div>
-          <p className="font-semibold text-gray-800">Mishabs Organisation</p>
+          <p className="font-semibold text-gray-800">
+            {user?.name} Organisation
+          </p>
           <p className="text-sm text-gray-500">Pickup unit</p>
         </div>
         <button
           className="w-10 h-10 bg-[rgba(160,0,160,0.2)] rounded-full flex items-center justify-center font-bold text-lg cursor-pointer"
           onClick={() => router.push("/profile")}
         >
-          M
+          {user?.name?.charAt(0).toUpperCase()}
         </button>
       </div>
 
