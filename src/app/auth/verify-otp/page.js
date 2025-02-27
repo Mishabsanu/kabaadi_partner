@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
+import { useSelector } from "react-redux";
 export default function VerifyOTP() {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(90); // 90 seconds countdown
@@ -9,7 +10,7 @@ export default function VerifyOTP() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mobile = searchParams.get("mobile");
-
+  const user = useSelector((state) => state?.auth?.current_user);
   useEffect(() => {
     if (timer > 0) {
       const countdown = setInterval(() => setTimer((prev) => prev - 1), 1000);
@@ -21,7 +22,13 @@ export default function VerifyOTP() {
 
   const handleVerify = () => {
     if (otp.length === 6) {
-      router.push("/auth/enter-details");
+      if (user?.id) {
+        // If the user has an id, redirect to under-review
+        router.push("/under-review");
+      } else {
+        // If the user doesn't have an id, redirect to enter-details
+        router.push("/auth/enter-details");
+      }
     } else {
       alert("Please enter a valid 6-digit OTP");
     }
