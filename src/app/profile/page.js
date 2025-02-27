@@ -9,11 +9,13 @@ import {
   FaHeadset,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setLogout } from "@/redux/auth/authSlice";
+import Link from "next/link";
 
 export default function Profile() {
   const router = useRouter();
+  const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.current_user);
   const menuItems = [
     { icon: <FaHome />, label: "My materials", path: "/materials" },
@@ -24,8 +26,11 @@ export default function Profile() {
     {
       icon: <FaSignOutAlt />,
       label: "Logout",
-      path: "/logout",
+      path: "/auth/enter-mobile",
       color: "text-red-500",
+      onClick: () => {
+        handleLogout();
+      },
     },
   ];
   const handleLogout = () => {
@@ -58,9 +63,10 @@ export default function Profile() {
       {/* Menu List */}
       <div className="w-full max-w-sm mt-6">
         {menuItems.map((item, index) => (
-          <button
+          <Link
+            href={item.path}
             key={index}
-            onClick={() => router.push(item.path)}
+            onClick={item.onClick || null}
             className={`w-full flex items-center p-4 bg-white rounded-lg shadow-md mb-2 transition ${
               item.color ? item.color : "text-gray-800"
             }`}
@@ -68,7 +74,7 @@ export default function Profile() {
             <div className="p-2 bg-gray-100 rounded-full">{item.icon}</div>
             <span className="ml-4 flex-grow text-left">{item.label}</span>
             <span className="text-gray-400">→</span>
-          </button>
+          </Link>
         ))}
       </div>
     </div>
