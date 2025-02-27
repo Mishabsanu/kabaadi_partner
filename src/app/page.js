@@ -12,11 +12,11 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-100">
+    <div className="flex items-center justify-center h-screen bg-[#F6F6F6]">
       <img
-        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTA38SscZbhQ8rpSTASajlKYpcLI6Hpf7JL8Q&s"
+        src="https://www.pngkit.com/png/detail/354-3549726_metal-prime-ventures-scrap-metals-logo-png.png"
         alt="Scrapr Logo"
-        className="w-40 animate-bounce"
+        className="w-40 animate-bounce "
       />
     </div>
   );
