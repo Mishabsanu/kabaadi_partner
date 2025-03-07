@@ -28,8 +28,8 @@ const LanguageSelection = () => {
   };
 
   return (
-    <div className="flex items-start justify-center h-screen mt-10 ">
-      <div className="w-full max-w-sm p-6  rounded-lg">
+    <div className="flex items-start justify-center h-screen mt-10">
+      <div className="w-full max-w-sm rounded-lg">
         <h2 className="text-2xl font-bold text-black mb-6 text-left">
           Select Language
         </h2>

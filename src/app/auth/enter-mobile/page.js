@@ -21,7 +21,6 @@ export default function EnterMobile() {
         const storedAuth = JSON.parse(storedState?.auth);
         const existingUsers = storedAuth?.users || [];
 
-        // Find the user by email (ensure email is available)
         const existingUser = existingUsers.find(
           (user) => user.mobile === mobile
         );
@@ -54,7 +53,7 @@ export default function EnterMobile() {
       } else {
         // If there's no existing state, create a new user
         const userId = uuidv4();
-        const newUser = { id: userId, email };
+        const newUser = { id: userId, mobile };
         const users = [newUser];
 
         dispatch(

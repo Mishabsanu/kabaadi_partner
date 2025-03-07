@@ -10,7 +10,11 @@ export default function VerifyOTP() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const mobile = searchParams.get("mobile");
+
+  console.log(mobile, "mobile");
   const user = useSelector((state) => state?.auth?.current_user);
+  console.log(user, "user");
+
   useEffect(() => {
     if (timer > 0) {
       const countdown = setInterval(() => setTimer((prev) => prev - 1), 1000);
@@ -21,8 +25,8 @@ export default function VerifyOTP() {
   }, [timer]);
 
   const handleVerify = () => {
-    if (otp.length === 6) {
-      if (user?.id) {
+    if (otp?.length === 6) {
+      if (user?.name) {
         // If the user has an id, redirect to under-review
         router.push("/under-review");
       } else {

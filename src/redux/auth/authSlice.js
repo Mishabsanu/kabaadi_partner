@@ -32,10 +32,11 @@ export const authSlice = createSlice({
       state.loading = true;
     },
     setUserDetails: (state, action) => {
-      const { name, lastName } = action.payload;
       if (state.current_user) {
-        state.current_user.name = name;
-        state.current_user.lastName = lastName;
+        state.current_user = {
+          ...state.current_user,
+          ...action.payload,
+        };
       }
     },
   },
