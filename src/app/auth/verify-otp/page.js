@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
 import { useSelector } from "react-redux";
-export default function VerifyOTP() {
+
+function VerifyOTPContent() {
   const [otp, setOtp] = useState("");
-  const [timer, setTimer] = useState(90); // 90 seconds countdown
+  const [timer, setTimer] = useState(90);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -27,10 +28,8 @@ export default function VerifyOTP() {
   const handleVerify = () => {
     if (otp?.length === 6) {
       if (user?.name) {
-        // If the user has an id, redirect to under-review
         router.push("/under-review");
       } else {
-        // If the user doesn't have an id, redirect to enter-details
         router.push("/auth/enter-details");
       }
     } else {
@@ -39,8 +38,8 @@ export default function VerifyOTP() {
   };
 
   const handleResendOTP = () => {
-    setOtp(""); // Clear OTP input
-    setTimer(90); // Reset timer
+    setOtp("");
+    setTimer(90);
     setIsResendDisabled(true);
     alert("OTP has been resent!");
   };
@@ -48,21 +47,16 @@ export default function VerifyOTP() {
   return (
     <div className="flex flex-col items-center justify-start h-screen p-4 bg-white">
       <div className="w-full max-w-sm">
-        {/* Back Button */}
         <button
           onClick={() => router.back()}
           className="text-left text-black text-base mb-3"
         >
           ← Back
         </button>
-
-        {/* Title & OTP Info */}
         <h1 className="text-xl font-bold text-black mb-1 mt-5">
           Enter the OTP sent to
         </h1>
         <p className="text-xl font-bold text-black mb-3">{mobile}</p>
-
-        {/* OTP Input Box */}
         <div className="border-2 border-[#8B008B] p-1 rounded-md text-center">
           <input
             type="text"
@@ -73,8 +67,6 @@ export default function VerifyOTP() {
             onChange={(e) => setOtp(e.target.value)}
           />
         </div>
-
-        {/* Continue Button */}
         <button
           className={`w-full mt-6 py-2 rounded-lg text-white font-medium ${
             otp.length === 6
@@ -86,8 +78,6 @@ export default function VerifyOTP() {
         >
           Continue
         </button>
-
-        {/* Resend OTP */}
         <p className="text-gray-500 text-center mt-3 text-sm">
           Didn’t get OTP?{" "}
           <button
@@ -102,5 +92,14 @@ export default function VerifyOTP() {
         </p>
       </div>
     </div>
+  );
+}
+
+// Wrap in Suspense for proper rendering
+export default function VerifyOTP() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyOTPContent />
+    </Suspense>
   );
 }
