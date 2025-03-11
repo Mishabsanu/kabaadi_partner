@@ -6,15 +6,20 @@ import { Suspense, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
 
-
 function VerifyOTPContent() {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(10);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const router = useRouter();
-  const mobile = localStorage.getItem("mobile");
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.current_user);
+  const [mobile, setMobile] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setMobile(localStorage.getItem("mobile"));
+    }
+  }, []);
 
   useEffect(() => {
     if (timer > 0) {
