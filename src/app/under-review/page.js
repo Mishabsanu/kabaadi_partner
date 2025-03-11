@@ -7,14 +7,14 @@ import { useSelector } from "react-redux";
 
 export default function UnderReview() {
   const router = useRouter();
-  const user = useSelector((state) => state?.auth?.current_user);
+  const user = useSelector((state) => state.auth);
 
   return (
     <div className=" flex flex-col items-center mt-5 justify-start min-h-screen bg-gray-50">
       <div className="w-full max-w-sm bg-white shadow-md rounded-lg p-6 flex items-center justify-between mx-auto">
         <div className="py-3 ">
           <p className="font-semibold text-gray-800">
-            {user?.name} Organisation
+            {user?.user?.first_name} Organisation
           </p>
           <div
             className="flex items-center text-sm text-gray-500 cursor-pointer"
@@ -28,7 +28,7 @@ export default function UnderReview() {
           className="w-10 h-10 bg-[rgba(160,0,160,0.2)] rounded-full flex items-center justify-center font-bold text-lg cursor-pointer"
           onClick={() => router.push("/profile")}
         >
-          {user?.name?.charAt(0).toUpperCase()}
+          {user?.user?.first_name?.charAt(0).toUpperCase()}
         </button>
       </div>
 

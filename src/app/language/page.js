@@ -1,29 +1,28 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import withGuest from "@/hoc/withGuest";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
 const LanguageSelection = () => {
   const router = useRouter();
-  const [selectedLanguage, setSelectedLanguage] = useState("");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedLanguage = localStorage.getItem("selectedLanguage");
-      if (storedLanguage) {
-        router.push("/auth/enter-mobile");
-      }
-    }
-  }, [router]);
+  const [selectedLanguage, setSelectedLanguage] = useState("English");
+  const [loading, setLoading] = useState(false);
 
   const handleLanguageSelect = (lang) => {
     setSelectedLanguage(lang);
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (selectedLanguage) {
+      setLoading(true);
       localStorage.setItem("selectedLanguage", selectedLanguage);
-      router.push("/auth/enter-mobile");
+      localStorage.setItem("progressStep", "languageSelection");
+      toast.success(`Language set to ${selectedLanguage}. Redirecting...`);
+      router.push(`/auth/enter-mobile?language=${selectedLanguage}`);
+    } else {
+      toast.error("Please select a language before continuing.");
     }
   };
 
@@ -68,19 +67,23 @@ const LanguageSelection = () => {
         </div>
 
         <button
-          className={`w-full text-white py-2 mt-6 rounded-lg font-semibold transition-all duration-200 ${
+          className={`w-full text-white py-2 mt-6 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center ${
             selectedLanguage
               ? "bg-[rgba(139,0,139,1)] hover:bg-[rgba(160,0,160,1)]"
               : "bg-[rgba(196,98,196,1)] cursor-not-allowed"
           }`}
-          disabled={!selectedLanguage}
+          disabled={!selectedLanguage || loading}
           onClick={handleContinue}
         >
-          Continue
+          {loading ? (
+            <span className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></span>
+          ) : (
+            "Continue"
+          )}
         </button>
       </div>
     </div>
   );
 };
 
-export default LanguageSelection;
+export default withGuest(LanguageSelection);

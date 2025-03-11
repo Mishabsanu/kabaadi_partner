@@ -1,84 +1,45 @@
 "use client";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { setLogin } from "@/redux/auth/authSlice";
-import { useDispatch } from "react-redux";
-import { v4 as uuidv4 } from "uuid";
+import { useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import withGuest from "@/hoc/withGuest";
 
-export default function EnterMobile() {
+const EnterMobile = () => {
   const [mobile, setMobile] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const dispatch = useDispatch();
-  const handleNext = () => {
+
+  const handleNext = async () => {
     if (mobile.length === 10) {
-      // Get persisted state from localStorage
-      const storedStateString = localStorage.getItem("persist:root");
-      console.log(storedStateString, "storedStateString");
+      setLoading(true);
 
-      if (storedStateString) {
-        // Parse the stored state
-        const storedState = JSON.parse(storedStateString);
-        const storedAuth = JSON.parse(storedState?.auth);
-        const existingUsers = storedAuth?.users || [];
-
-        const existingUser = existingUsers.find(
-          (user) => user.mobile === mobile
+      try {
+        const response = await axios.post(
+          "http://localhost:2000/api/V1/partner/send-otp",
+          { mobile_no: mobile }
         );
-
-        if (existingUser) {
-          // If user exists, update Redux store with the existing user
-          const users = [...existingUsers]; // Create a copy of the existing users array
-          dispatch(
-            setLogin({
-              current_user: { id: existingUser.id, mobile },
-              users: users,
-            })
-          );
-        } else {
-          // If no existing user, create a new user and add to Redux
-          const userId = uuidv4();
-          const newUser = { id: userId, mobile };
-          const users = [...existingUsers, newUser]; // Add the new user to the list
-
-          dispatch(
-            setLogin({
-              current_user: newUser,
-              users: users,
-            })
-          );
-        }
-
-        // Navigate to the home page or any other page after login
+        localStorage.setItem("progressStep", "enterMobile"); 
+        toast.success("OTP sent successfully!.");
         router.push(`/auth/verify-otp?mobile=${mobile}`);
-      } else {
-        // If there's no existing state, create a new user
-        const userId = uuidv4();
-        const newUser = { id: userId, mobile };
-        const users = [newUser];
-
-        dispatch(
-          setLogin({
-            current_user: newUser,
-            users: users,
-          })
-        );
-
-        router.push(`/auth/verify-otp?mobile=${mobile}`);
+      } catch (error) {
+        toast.error("Failed to send OTP. Please try again.");
+        console.error("Error sending OTP:", error);
+      } finally {
+        setLoading(false);
       }
-      // Redirect to OTP verification page with mobile as a query parameter
-      router.push(`/auth/verify-otp?mobile=${mobile}`);
+    } else {
+      toast.error("Invalid mobile number. Must be 10 digits.");
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-start h-screen px-6 bg-white">
       <div className="w-full max-w-sm mt-14">
-        {/* Header Text */}
         <h1 className="text-2xl font-bold text-black mb-6">
           Enter your mobile number
         </h1>
 
-        {/* Mobile Input Box */}
         <div className="flex items-center border border-gray-400 rounded-lg px-3 py-1 w-full">
           <span className="text-black">+91</span>
           <span className="mx-2 text-black">|</span>
@@ -89,8 +50,8 @@ export default function EnterMobile() {
             value={mobile}
             maxLength={10}
             onChange={(e) => {
-              const onlyNums = e.target.value.replace(/\D/g, ""); // Allow only digits
-              setMobile(onlyNums.slice(0, 10)); // Enforce max length of 10
+              const onlyNums = e.target.value.replace(/\D/g, "");
+              setMobile(onlyNums.slice(0, 10));
             }}
           />
         </div>
@@ -102,12 +63,11 @@ export default function EnterMobile() {
               : "bg-[#af6aaf] cursor-not-allowed"
           }`}
           onClick={handleNext}
-          disabled={mobile.length !== 10}
+          disabled={mobile.length !== 10 || loading}
         >
-          Continue
+          {loading ? "Sending OTP..." : "Continue"}
         </button>
 
-        {/* Terms & Conditions */}
         <p className="text-sm text-gray-600 mt-4 text-center">
           By continuing, You accept the{" "}
           <span className="text-[#8B008B] underline cursor-pointer">
@@ -126,4 +86,6 @@ export default function EnterMobile() {
       </div>
     </div>
   );
-}
+};
+
+export default withGuest(EnterMobile);

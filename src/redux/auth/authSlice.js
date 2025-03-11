@@ -1,47 +1,44 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  users: [],
+  user: null, // Set user to null initially
+  token: null, // Store authentication token
+  routes: [],
+  language: "en", // Default language (change as needed)
   loading: false,
-  current_user: null,
 };
 
 export const authSlice = createSlice({
-  name: "users",
+  name: "auth",
   initialState,
   reducers: {
     setLogin: (state, action) => {
-      const { users, current_user } = action.payload;
-
-      const uniqueUsers = users?.filter(
-        (user) =>
-          !state.users?.some(
-            (existingUser) => existingUser?.mobile === user?.mobile
-          )
-      );
-
-      state.users = [...state.users, ...uniqueUsers];
-      state.current_user = current_user;
-      state.loading = false;
+      const { user, token, routes } = action.payload;
+      if (token) {
+        state.token = token;
+      }
+      if (routes) {
+        state.routes = routes;
+      }
+      state.user = user;
     },
 
     setLogout: (state) => {
-      state.current_user = null;
+      state.user = null;
+      state.token = null;
+    },
+    setLanguage: (state, action) => {
+      state.language = action.payload;
     },
     startLoading: (state) => {
       state.loading = true;
     },
-    setUserDetails: (state, action) => {
-      if (state.current_user) {
-        state.current_user = {
-          ...state.current_user,
-          ...action.payload,
-        };
-      }
+    stopLoading: (state) => {
+      state.loading = false;
     },
   },
 });
 
-export const { setLogin, setLogout, startLoading, setUserDetails } =
+export const { setLogin, setLogout, setLanguage, startLoading, stopLoading } =
   authSlice.actions;
 export default authSlice.reducer;

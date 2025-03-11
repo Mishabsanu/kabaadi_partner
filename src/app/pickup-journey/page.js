@@ -1,183 +1,124 @@
 "use client";
-
+import { usePersistLoginQuery } from "@/services/auth/authApi";
+import { ArrowLeft } from "lucide-react";
+import Head from "next/head";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { MultiSelect } from "react-multi-select-component";
+import { useEffect, useMemo } from "react";
+import { toast } from "sonner";
 
-const daysOfWeek = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-const pincodes = ["110001", "110002", "110003", "400001", "400002", "400003"];
-
-const RoutePlanner = () => {
-  const [routes, setRoutes] = useState({});
-  const [routeTable, setRouteTable] = useState([]);
+export default function WeeklyRoutes() {
   const router = useRouter();
-  const selectedPincodes = Object.values(routes).flat();
+  const { data: userData, error: userError } = usePersistLoginQuery();
+  const user = useMemo(() => userData?.result || {}, [userData]);
 
-  const handleSelect = (day, selectedOptions) => {
-    setRoutes((prev) => ({
-      ...prev,
-      [day]: selectedOptions.map((option) => option.value),
-    }));
-  };
+  useEffect(() => {
+    if (userError) {
+      toast.error(userError?.data?.message || "An error occurred.");
+    }
+  }, [userError]);
 
-  const generateRoutes = () => {
-    const newRoutes = Object.entries(routes).map(([day, pincodeList]) => ({
-      day,
-      pincodes: pincodeList.length > 0 ? pincodeList : ["Off Day"],
-    }));
-    setRouteTable(newRoutes);
-  };
+  useEffect(() => {
+    if (!user?.picking) {
+      router.push("/create-pick-list");
+    }
+  }, [user?.picking, router]);
 
-  const deleteRoute = (index) => {
-    const newTable = routeTable.filter((_, i) => i !== index);
-    setRouteTable(newTable);
-
-    const updatedRoutes = {};
-    newTable.forEach((route) => {
-      if (route.pincodes[0] !== "Off Day") {
-        updatedRoutes[route.day] = route.pincodes;
-      }
-    });
-    setRoutes(updatedRoutes);
-  };
+  const weeklyRoutes = [
+    { day: "Monday", off: false },
+    { day: "Tuesday", off: false },
+    { day: "Wednesday", off: false },
+    { day: "Thursday", off: false },
+    { day: "Friday", off: false },
+    { day: "Saturday", off: false },
+    { day: "Sunday", off: true },
+  ];
 
   return (
-    // <div className="p-4 max-w-xl  bg-white shadow-md rounded-md w-full">
-    <div className="w-full max-w-xl p-8 bg-white rounded-lg mx-auto">
-      {/* </div> */}
-      <button
-        onClick={() => router.back()}
-        className="text-left text-black text-base mb-6"
-      >
-        ← Back
-      </button>
+    <div className="bg-gradient-to-br from-gray-100 to-gray-300 min-h-screen flex flex-col items-center p-6">
+      <Head>
+        <title>Weekly Routes</title>
+      </Head>
 
-      {/* Title */}
+      {/* Header */}
+      <div className="bg-[#8B008B] text-white w-full max-w-2xl flex items-center px-5 py-4 rounded-xl shadow-lg">
+        <button
+          onClick={() => router.push("/under-review")}
+          className="text-white hover:opacity-80 transition"
+        >
+          <ArrowLeft size={24} />
+        </button>
+        <h1 className="mx-auto text-lg font-bold">Weekly Routes</h1>
+      </div>
 
-      <h1 className="text-2xl font-bold text-black mb-6">Route Planner</h1>
-
-      <div className="space-y-3">
-        {daysOfWeek.map((day) => {
-          const availablePincodes = pincodes.filter(
-            (pincode) =>
-              !selectedPincodes.includes(pincode) ||
-              (routes[day] || []).includes(pincode)
-          );
+      {/* Weekly Routes List */}
+      <div className="mt-6 space-y-5 w-full max-w-2xl">
+        {weeklyRoutes.map(({ day, off }) => {
+          const pinCodes =
+            user?.picking?.filter((item) => item.day === day) || [];
 
           return (
             <div
               key={day}
-              className="flex flex-col sm:flex-row sm:items-center gap-2 bg-gray-50 p-3 rounded-md shadow w-full"
+              className={`p-6 rounded-xl shadow-lg transition transform hover:scale-105 backdrop-blur-lg ${
+                off
+                  ? "bg-gray-200 text-gray-500 border border-gray-300"
+                  : "bg-white text-gray-800 border border-gray-300"
+              }`}
             >
-              {" "}
-              {/* Adjusted width */}
-              <span className="font-bold text-gray-700 w-full sm:w-32">
-                {day}:
-              </span>{" "}
-              {/* Fixed width for labels */}
-              <div className="w-full sm:w-auto">
-                {" "}
-                {/* Flexible width for dropdown */}
-                <MultiSelect
-                  options={availablePincodes.map((pincode) => ({
-                    label: pincode,
-                    value: pincode,
-                  }))}
-                  value={(routes[day] || []).map((pincode) => ({
-                    label: pincode,
-                    value: pincode,
-                  }))}
-                  onChange={(selected) => handleSelect(day, selected)}
-                  labelledBy="Select Pincodes"
-                  className="w-full  sm:w-96"
-                />
+              <div className="flex justify-between items-center">
+                <span className="text-lg font-semibold">{day}</span>
+                {off ? (
+                  <span className="text-red-500 font-medium">Day Off</span>
+                ) : pinCodes.length > 0 ? (
+                  <button
+                    onClick={() => router.push("/create-pick-list")}
+                    className="bg-[#8B008B] text-white text-sm px-5 py-2 rounded-full shadow-md hover:scale-105 transition"
+                  >
+                    Edit
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => router.push("/create-pick-list")}
+                    className="bg-[#8B008B] text-white text-sm px-5 py-2 rounded-full shadow-md hover:scale-105 transition"
+                  >
+                    Create
+                  </button>
+                )}
               </div>
+
+              {!off && pinCodes.length > 0 && (
+                <div className="mt-4">
+                  <p className="text-sm font-medium text-gray-600">
+                    Pin Codes:
+                  </p>
+                  <div className="flex flex-wrap gap-3 mt-2">
+                    {" "}
+                    {/* Increased gap */}
+                    {pinCodes.map((item, index) => (
+                      <div key={index} className="flex flex-wrap gap-2">
+                        {Array.isArray(item.pin_codes) ? (
+                          item.pin_codes.map((pin, i) => (
+                            <span
+                              key={i}
+                              className="bg-gradient-to-r from-purple-100 to-pink-200 text-purple-700 text-xs font-semibold px-4 py-1 rounded-full shadow-sm"
+                            >
+                              {pin}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="bg-gradient-to-r from-purple-100 to-pink-200 text-purple-700 text-xs font-semibold px-4 py-1 rounded-full shadow-sm">
+                            {item.pin_codes}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           );
         })}
-
-        {/* Disabled Sunday */}
-        <div className="flex items-center gap-2 bg-gray-200 p-3 rounded-md shadow-md opacity-70">
-          <span className="font-bold text-gray-700 w-full sm:w-32">
-            Sunday:
-          </span>
-          <span className="text-gray-500">Off Day</span>
-        </div>
       </div>
-      <button
-        className="mt-4 w-full bg-[#8B008B] hover:bg-[#6F006F] text-white font-semibold py-2 rounded-md transition duration-200"
-        onClick={generateRoutes}
-      >
-        Generate Route
-      </button>
-
-      {routeTable.length > 0 && (
-        <div className="mt-6 rounded-md  w-full overflow-x-auto">
-          {" "}
-          {/* Responsive table */}
-          <h3 className="text-lg font-semibold mb-3 text-black">
-            Plan Journey
-          </h3>
-          <table className="w-full text-sm border border-gray-300 rounded-md">
-            <thead>
-              <tr className="bg-[#8B008B] text-white text-left">
-                <th className="p-2 border border-gray-300">Day</th>
-                <th className="p-2 border border-gray-300">Pincodes</th>
-                <th className="p-2 border border-gray-300 text-center">
-                  Actions
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {routeTable.map((route, index) => (
-                <tr
-                  key={index}
-                  className="text-gray-800 bg-white hover:bg-gray-100"
-                >
-                  <td className="p-2 border border-gray-300">{route.day}</td>
-                  <td
-                    className={`p-2 border border-gray-300 ${
-                      route.pincodes[0] === "Off Day"
-                        ? "text-red-500 font-bold"
-                        : ""
-                    }`}
-                  >
-                    {route.pincodes.join(", ")}
-                  </td>
-                  <td className="p-2 border border-gray-300 text-center">
-                    {route.pincodes[0] !== "Off Day" && (
-                      <button
-                        onClick={() => deleteRoute(index)}
-                        className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded-md text-sm font-semibold transition duration-200"
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-
-              {/* Show Sunday as Off Day */}
-              <tr className="text-gray-800 bg-gray-200">
-                <td className="p-2 border border-gray-300">Sunday</td>
-                <td className="p-2 border border-gray-300 text-red-500 font-bold">
-                  Off Day
-                </td>
-                <td className="p-2 border border-gray-300 text-center">-</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      )}
     </div>
   );
-};
-
-export default RoutePlanner;
+}

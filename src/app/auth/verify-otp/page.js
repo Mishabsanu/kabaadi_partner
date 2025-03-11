@@ -2,19 +2,21 @@
 import { useState, useEffect, Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { useSearchParams } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
+import { toast } from "sonner";
+import { setLogin } from "@/redux/auth/authSlice";
+import withGuest from "@/hoc/withGuest";
 
 function VerifyOTPContent() {
   const [otp, setOtp] = useState("");
-  const [timer, setTimer] = useState(90);
+  const [timer, setTimer] = useState(10);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
   const mobile = searchParams.get("mobile");
-
-  console.log(mobile, "mobile");
+  const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.current_user);
-  console.log(user, "user");
 
   useEffect(() => {
     if (timer > 0) {
@@ -25,23 +27,63 @@ function VerifyOTPContent() {
     }
   }, [timer]);
 
-  const handleVerify = () => {
-    if (otp?.length === 6) {
-      if (user?.name) {
-        router.push("/under-review");
+  const handleVerify = async () => {
+    if (otp.length !== 6) {
+      toast.error("Please enter a valid 6-digit OTP.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:2000/api/V1/partner/verify-otp",
+        { mobile_no: mobile, otp }
+      );
+      localStorage.setItem("accessToken", response?.data?.token);
+      dispatch(
+        setLogin({ user: response?.data?.result, token: response?.data?.token })
+      );
+
+      if (response?.data.status) {
+        toast.success("OTP Verified Successfully!");
+
+        if (user?.first_name) {
+          router.push("/under-review");
+        } else {
+          router.push(`/auth/personal-details?mobile=${mobile}`);
+        }
       } else {
-        router.push("/auth/enter-details");
+        toast.error(response.data.message || "Invalid OTP. Please try again.");
       }
-    } else {
-      alert("Please enter a valid 6-digit OTP");
+    } catch (error) {
+      console.error("OTP Verification Failed:", error);
+      toast.error(error.response?.data?.message || "Failed to verify OTP.");
     }
   };
 
-  const handleResendOTP = () => {
-    setOtp("");
-    setTimer(90);
-    setIsResendDisabled(true);
-    alert("OTP has been resent!");
+  const handleResendOTP = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:2000/api/V1/partner/send-otp",
+        { mobile_no: mobile }
+      );
+      if (response.data) {
+        localStorage.setItem("progressStep", "otpVerified");
+        toast.success("OTP has been resent successfully!");
+        setOtp("");
+        setTimer(60);
+        setIsResendDisabled(true);
+      } else {
+        toast.error(
+          response.data.message || "Failed to resend OTP. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Resend OTP Failed:", error);
+      toast.error(
+        error.response?.data?.message ||
+          "Something went wrong while resending OTP."
+      );
+    }
   };
 
   return (
@@ -96,10 +138,12 @@ function VerifyOTPContent() {
 }
 
 // Wrap in Suspense for proper rendering
-export default function VerifyOTP() {
+const VerifyOTP = () => {
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <VerifyOTPContent />
     </Suspense>
   );
-}
+};
+
+export default withGuest(VerifyOTP);

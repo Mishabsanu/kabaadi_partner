@@ -1,21 +1,27 @@
 "use client";
-import { setUserDetails } from "@/redux/auth/authSlice";
-import { useRouter } from "next/navigation";
+
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { MapPinIcon } from "@heroicons/react/24/solid";
-export default function EnterDetails() {
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [street, setStreet] = useState("");
+import axios from "axios";
+import { toast } from "sonner";
+import { setLogin } from "@/redux/auth/authSlice";
+import withGuest from "@/hoc/withGuest";
+
+const PersonalDetails = () => {
+  const [first_name, setName] = useState("");
+  const [last_name, setLastName] = useState("");
+  const [address, setStreet] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
-  const [pincode, setPincode] = useState("");
+  const [pin_code, setPincode] = useState("");
   const [country, setCountry] = useState("");
-  const [pan, setPan] = useState("");
-  const [gst, setGst] = useState("");
+  const [pan_no, setPan] = useState("");
+  const [gst_no, setGst] = useState("");
   const [myLatitude, setMyLatitude] = useState("");
   const [myLongitude, setMyLongitude] = useState("");
+  const user = useSelector((state) => state.auth);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -23,50 +29,100 @@ export default function EnterDetails() {
   // Function to capture user location and autofill address fields
   const handleAutoFill = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
-        const { latitude, longitude } = position.coords;
-        try {
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
-          );
-          const data = await response.json();
-          if (data.address) {
-            setStreet(data.address.road || "");
-            setCity(data.address.city || data.address.town || "");
-            setState(data.address.state || "");
-            setPincode(data.address.postcode || "");
-            setCountry(data.address.country || "");
-            setMyLatitude(latitude);
-            setMyLongitude(longitude);
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const response = await fetch(
+              `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`
+            );
+            const data = await response.json();
+            if (data.address) {
+              setStreet(data.address.road || "");
+              setCity(data.address.city || data.address.town || "");
+              setState(data.address.state || "");
+              setPincode(data.address.postcode || "");
+              setCountry(data.address.country || "");
+              setMyLatitude(latitude);
+              setMyLongitude(longitude);
+
+              // ✅ Success Toast Notification
+              toast.success("Address auto-filled successfully!");
+            } else {
+              toast.error("Failed to retrieve address. Try again.");
+            }
+          } catch (error) {
+            console.error("Error fetching address:", error);
+            toast.error("Error fetching address. Please try again.");
           }
-        } catch (error) {
-          console.error("Error fetching address:", error);
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+          toast.error(
+            "Unable to access location. Please enable location services."
+          );
         }
-      });
+      );
     } else {
-      alert("Geolocation is not supported by your browser.");
+      toast.error("Geolocation is not supported by your browser.");
     }
   };
 
-  const handleContinue = () => {
-    if (name && lastName && city && state && pincode && country && pan && gst) {
-      dispatch(
-        setUserDetails({
-          name,
-          lastName,
-          street,
-          city,
-          state,
-          pincode,
-          country,
-          pan,
-          gst,
-          myLatitude,
-          myLongitude,
-        })
-      );
-      // router.push("/vehicle/add-vehicle");
-      router.push("/under-review");
+  const handleContinue = async () => {
+    if (
+      first_name &&
+      last_name &&
+      city &&
+      state &&
+      pin_code &&
+      country &&
+      pan_no &&
+      gst_no
+    ) {
+      try {
+        const response = await axios.post(
+          "http://localhost:2000/api/V1/partner/personal-details",
+          {
+            first_name,
+            last_name,
+            address,
+            city,
+            state,
+            pin_code,
+            country,
+            pan_no,
+            gst_no,
+            latitude: myLatitude,
+            longitude: myLongitude,
+            userId: user?.user?._id,
+          }
+        );
+        localStorage.setItem("progressStep", "personalDetails");
+        if (response.data) {
+          dispatch(
+            setLogin({
+              user: response?.data?.result,
+            })
+          );
+
+          // ✅ Success Toast Notification
+          toast.success("Details submitted successfully!");
+
+          router.push("/under-review");
+        } else {
+          toast.error(
+            response.data.message || "Something went wrong. Please try again."
+          );
+        }
+      } catch (error) {
+        console.error("API Error:", error);
+        toast.error(
+          error.response?.data?.message ||
+            "Failed to submit details. Please check your inputs and try again."
+        );
+      }
+    } else {
+      toast.error("Please fill all required fields.");
     }
   };
 
@@ -95,7 +151,7 @@ export default function EnterDetails() {
               type="text"
               className="border border-gray-400 rounded-md p-2 w-full text-base"
               placeholder="First Name"
-              value={name}
+              value={first_name}
               onChange={(e) => setName(e.target.value)}
             />
           </div>
@@ -107,7 +163,7 @@ export default function EnterDetails() {
               type="text"
               className="border border-gray-400 rounded-md p-2 w-full text-base"
               placeholder="Last Name"
-              value={lastName}
+              value={last_name}
               onChange={(e) => setLastName(e.target.value)}
             />
           </div>
@@ -121,7 +177,7 @@ export default function EnterDetails() {
               type="text"
               className="border border-gray-400 rounded-md p-2 w-full text-base pr-10"
               placeholder="Street"
-              value={street}
+              value={address}
               onChange={(e) => setStreet(e.target.value)}
             />
             <MapPinIcon
@@ -161,7 +217,7 @@ export default function EnterDetails() {
               type="text"
               className="border border-gray-400 rounded-md p-2 w-full text-base"
               placeholder="Pincode"
-              value={pincode}
+              value={pin_code}
               onChange={(e) => setPincode(e.target.value)}
             />
           </div>
@@ -185,7 +241,7 @@ export default function EnterDetails() {
               type="text"
               className="border border-gray-400 rounded-md p-2 w-full text-base"
               placeholder="ABCDE1234F"
-              value={pan}
+              value={pan_no}
               onChange={(e) => setPan(e.target.value)}
             />
           </div>
@@ -195,7 +251,7 @@ export default function EnterDetails() {
               type="text"
               className="border border-gray-400 rounded-md p-2 w-full text-base"
               placeholder="22AAAAA0000A1Z5"
-              value={gst}
+              value={gst_no}
               onChange={(e) => setGst(e.target.value)}
             />
           </div>
@@ -204,14 +260,14 @@ export default function EnterDetails() {
         {/* Continue Button */}
         <button
           className={`w-full mt-6 py-2 rounded-lg text-white font-medium ${
-            name &&
-            lastName &&
+            first_name &&
+            last_name &&
             city &&
             state &&
-            pincode &&
+            pin_code &&
             country &&
-            pan &&
-            gst
+            pan_no &&
+            gst_no
               ? "bg-[#8B008B]"
               : "bg-[#af6aaf] cursor-not-allowed"
           }`}
@@ -230,4 +286,5 @@ export default function EnterDetails() {
       </div>
     </div>
   );
-}
+};
+export default withGuest(PersonalDetails);

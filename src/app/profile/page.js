@@ -16,7 +16,7 @@ import Link from "next/link";
 export default function Profile() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state?.auth?.current_user);
+  const user = useSelector((state) => state.auth);
   const menuItems = [
     { icon: <FaHome />, label: "My materials", path: "/materials" },
     { icon: <FaBox />, label: "Requests", path: "/requests" },
@@ -54,13 +54,13 @@ export default function Profile() {
       {/* Profile Info */}
       <div className="flex flex-col items-center mt-5">
         <div className="w-20 h-20 bg-[rgba(160,0,160,0.2)] text-purple-800 rounded-full flex items-center justify-center text-2xl font-bold">
-          {user?.name?.charAt(0).toUpperCase()}
+          {user?.user?.first_name?.charAt(0).toUpperCase()}
         </div>
 
         <h2 className="mt-3 text-lg font-bold text-gray-800">
-          {user?.name} {user?.lastName}
+          {user?.user?.first_name} {user?.user?.lastName}
         </h2>
-        <p className="text-gray-600 text-sm">+91 {user?.mobile}</p>
+        <p className="text-gray-600 text-sm">+91 {user?.user?.mobile_no}</p>
       </div>
 
       {/* Menu List */}
