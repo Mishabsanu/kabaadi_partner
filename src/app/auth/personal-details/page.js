@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MapPinIcon } from "@heroicons/react/24/solid";
 import axios from "axios";
