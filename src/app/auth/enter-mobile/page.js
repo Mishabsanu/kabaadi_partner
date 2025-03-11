@@ -88,10 +88,4 @@ const EnterMobileContent = () => {
   );
 };
 
-const EnterMobile = () => (
-  <Suspense fallback={<div>Loading...</div>}>
-    <EnterMobileContent />
-  </Suspense>
-);
-
-export default withGuest(EnterMobile);
+export default EnterMobileContent;
