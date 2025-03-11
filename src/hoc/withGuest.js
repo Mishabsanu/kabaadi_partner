@@ -29,7 +29,7 @@ const withGuest = (WrappedComponent) => {
             router.push(`/auth/verify-otp${queryString}`);
             break;
           case "otpVerified":
-            router.push(`/auth/personal-details${queryString}`);
+            router.push(`/auth/personal-details`);
             break;
           case "personalDetails":
             router.push(`/under-review`);

@@ -49,7 +49,7 @@ function VerifyOTPContent() {
         if (user?.first_name) {
           router.push("/under-review");
         } else {
-          router.push(`/auth/personal-details?mobile=${mobile}`);
+          router.push(`/auth/personal-details`);
         }
       } else {
         toast.error(response.data.message || "Invalid OTP. Please try again.");

@@ -288,10 +288,4 @@ const PersonalDetailsContent = () => {
   );
 };
 
-const PersonalDetails = () => (
-  <Suspense fallback={<div>Loading...</div>}>
-    <PersonalDetailsContent />
-  </Suspense>
-);
-
-export default withGuest(PersonalDetails);
+export default PersonalDetailsContent;
