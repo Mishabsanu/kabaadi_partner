@@ -1,9 +1,8 @@
 "use client";
-import { Suspense, useState } from "react";
-import { useRouter } from "next/navigation";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { toast } from "sonner";
-import withGuest from "@/hoc/withGuest";
 
 const EnterMobileContent = () => {
   const [mobile, setMobile] = useState("");
@@ -11,14 +10,13 @@ const EnterMobileContent = () => {
   const router = useRouter();
 
   const handleNext = async () => {
-    if (mobile.length === 10) {
+    if (mobile?.length === 10) {
       setLoading(true);
 
       try {
-        const response = await axios.post(
-          "http://localhost:2000/api/V1/partner/send-otp",
-          { mobile_no: mobile }
-        );
+        await axios.post("http://localhost:2000/api/V1/partner/send-otp", {
+          mobile_no: mobile,
+        });
         localStorage.setItem("progressStep", "enterMobile");
         localStorage.setItem("mobile", mobile);
         toast.success("OTP sent successfully!");
@@ -59,12 +57,12 @@ const EnterMobileContent = () => {
 
         <button
           className={`w-full mt-6 py-2 rounded-lg text-white font-medium ${
-            mobile.length === 10
+            mobile?.length === 10
               ? "bg-[#8B008B]"
               : "bg-[#af6aaf] cursor-not-allowed"
           }`}
           onClick={handleNext}
-          disabled={mobile.length !== 10 || loading}
+          disabled={mobile?.length !== 10 || loading}
         >
           {loading ? "Sending OTP..." : "Continue"}
         </button>
