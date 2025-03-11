@@ -1,18 +1,13 @@
-import { useEffect, useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+"use client";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 const withGuest = (WrappedComponent) => {
   const GuestComponent = (props) => {
     const router = useRouter();
-    const searchParams = useSearchParams();
-    const user = useSelector((state) => state.auth);
 
-    // Memoize queryString to prevent unnecessary recalculations
-    const queryString = useMemo(() => {
-      const query = searchParams.toString();
-      return query ? `?${query}` : "";
-    }, [searchParams]);
+    const user = useSelector((state) => state.auth);
 
     useEffect(() => {
       const token = localStorage.getItem("accessToken");
@@ -26,7 +21,7 @@ const withGuest = (WrappedComponent) => {
             router.push(`/auth/enter-mobile`);
             break;
           case "enterMobile":
-            router.push(`/auth/verify-otp${queryString}`);
+            router.push(`/auth/verify-otp`);
             break;
           case "otpVerified":
             router.push(`/auth/personal-details`);
@@ -38,7 +33,7 @@ const withGuest = (WrappedComponent) => {
             router.push(`/language`);
         }
       }
-    }, [router, queryString]);
+    }, [router]);
 
     return <WrappedComponent {...props} />;
   };

@@ -20,8 +20,9 @@ const EnterMobileContent = () => {
           { mobile_no: mobile }
         );
         localStorage.setItem("progressStep", "enterMobile");
+        localStorage.setItem("mobile", mobile);
         toast.success("OTP sent successfully!");
-        router.push(`/auth/verify-otp?mobile=${mobile}`);
+        router.push(`/auth/verify-otp`);
       } catch (error) {
         toast.error("Failed to send OTP. Please try again.");
         console.error("Error sending OTP:", error);

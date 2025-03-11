@@ -1,4 +1,3 @@
-
 "use client";
 import { setLogin } from "@/redux/auth/authSlice";
 import axios from "axios";
@@ -13,7 +12,7 @@ const VerifyOTPContent = () => {
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const mobile = searchParams.get("mobile");
+  const mobile = localStorage.getItem("mobile");
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.current_user);
 
