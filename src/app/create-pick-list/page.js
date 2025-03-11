@@ -25,8 +25,9 @@ const RoutePlanner = () => {
   const router = useRouter();
 
   const user = useSelector((state) => state.auth);
-  const latitude = user.user.latitude;
-  const longitude = user.user.longitude;
+  const latitude = user?.user?.latitude ?? null;
+  const longitude = user?.user?.longitude ?? null;
+
   const [addRoutePlan] = useAddRoutePlanMutation(user?.user?._id);
 
   const fetchNearbyPincodes = useCallback(async () => {
@@ -63,10 +64,10 @@ const RoutePlanner = () => {
       console.error("Error fetching pincodes:", error);
       toast.error("Failed to fetch nearby pincodes!");
     }
-  }, [latitude, longitude]); // Dependencies for useCallback
+  }, [latitude, longitude]);
 
   useEffect(() => {
-    if (latitude && longitude) {
+    if (latitude !== null && longitude !== null) {
       fetchNearbyPincodes();
     }
   }, [latitude, longitude, fetchNearbyPincodes]);
