@@ -9,7 +9,7 @@ import { toast } from "sonner";
 import { setLogin } from "@/redux/auth/authSlice";
 import withGuest from "@/hoc/withGuest";
 
-const PersonalDetails = () => {
+const PersonalDetailsContent = () => {
   const [first_name, setName] = useState("");
   const [last_name, setLastName] = useState("");
   const [address, setStreet] = useState("");
@@ -287,4 +287,11 @@ const PersonalDetails = () => {
     </div>
   );
 };
+
+const PersonalDetails = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <PersonalDetailsContent />
+  </Suspense>
+);
+
 export default withGuest(PersonalDetails);
