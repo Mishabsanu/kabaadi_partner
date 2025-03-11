@@ -13,10 +13,30 @@ function VerifyOTPContent() {
   const [timer, setTimer] = useState(10);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const mobile = searchParams.get("mobile");
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.current_user);
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyOTPUI 
+        otp={otp} 
+        setOtp={setOtp} 
+        timer={timer} 
+        setTimer={setTimer} 
+        isResendDisabled={isResendDisabled} 
+        setIsResendDisabled={setIsResendDisabled} 
+        router={router} 
+        dispatch={dispatch} 
+        user={user} 
+      />
+    </Suspense>
+  );
+}
+
+// Move useSearchParams() inside a separate component wrapped with Suspense
+function VerifyOTPUI({ otp, setOtp, timer, setTimer, isResendDisabled, setIsResendDisabled, router, dispatch, user }) {
+  const searchParams = useSearchParams();
+  const mobile = searchParams.get("mobile");
 
   useEffect(() => {
     if (timer > 0) {
@@ -140,9 +160,7 @@ function VerifyOTPContent() {
 // Wrap in Suspense for proper rendering
 const VerifyOTP = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <VerifyOTPContent />
-    </Suspense>
+    <VerifyOTPContent />
   );
 };
 
