@@ -1,11 +1,11 @@
 "use client";
+import { Suspense, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import withGuest from "@/hoc/withGuest";
 
-const EnterMobile = () => {
+const EnterMobileContent = () => {
   const [mobile, setMobile] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -19,8 +19,8 @@ const EnterMobile = () => {
           "http://localhost:2000/api/V1/partner/send-otp",
           { mobile_no: mobile }
         );
-        localStorage.setItem("progressStep", "enterMobile"); 
-        toast.success("OTP sent successfully!.");
+        localStorage.setItem("progressStep", "enterMobile");
+        toast.success("OTP sent successfully!");
         router.push(`/auth/verify-otp?mobile=${mobile}`);
       } catch (error) {
         toast.error("Failed to send OTP. Please try again.");
@@ -87,5 +87,11 @@ const EnterMobile = () => {
     </div>
   );
 };
+
+const EnterMobile = () => (
+  <Suspense fallback={<div>Loading...</div>}>
+    <EnterMobileContent />
+  </Suspense>
+);
 
 export default withGuest(EnterMobile);
