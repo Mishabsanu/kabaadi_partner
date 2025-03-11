@@ -23,7 +23,7 @@ const withGuest = (WrappedComponent) => {
       } else {
         switch (progressStep) {
           case "languageSelection":
-            router.push(`/auth/enter-mobile${queryString}`);
+            router.push(`/auth/enter-mobile`);
             break;
           case "enterMobile":
             router.push(`/auth/verify-otp${queryString}`);

@@ -20,7 +20,7 @@ const LanguageSelection = () => {
       localStorage.setItem("selectedLanguage", selectedLanguage);
       localStorage.setItem("progressStep", "languageSelection");
       toast.success(`Language set to ${selectedLanguage}. Redirecting...`);
-      router.push(`/auth/enter-mobile?language=${selectedLanguage}`);
+      router.push(`/auth/enter-mobile`);
     } else {
       toast.error("Please select a language before continuing.");
     }
