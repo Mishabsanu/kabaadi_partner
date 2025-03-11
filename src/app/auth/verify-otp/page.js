@@ -1,20 +1,18 @@
 "use client";
 import { setLogin } from "@/redux/auth/authSlice";
 import axios from "axios";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "sonner";
+
 
 function VerifyOTPContent() {
   const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(10);
   const [isResendDisabled, setIsResendDisabled] = useState(true);
   const router = useRouter();
-  const searchParams = useSearchParams();
   const mobile = localStorage.getItem("mobile");
-  console.log(mobile, "mobile");
-
   const dispatch = useDispatch();
   const user = useSelector((state) => state?.auth?.current_user);
 
@@ -137,4 +135,12 @@ function VerifyOTPContent() {
   );
 }
 
-export default VerifyOTPContent;
+const VerifyOTP = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyOTPContent />
+    </Suspense>
+  );
+};
+
+export default VerifyOTP;
