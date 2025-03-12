@@ -14,7 +14,7 @@ const EnterMobileContent = () => {
       setLoading(true);
 
       try {
-        await axios.post("http://localhost:2000/api/V1/partner/send-otp", {
+        await axios.post("https://kabadiwale-backend.onrender.com/api/V1/partner/send-otp", {
           mobile_no: mobile,
         });
         localStorage.setItem("progressStep", "enterMobile");
