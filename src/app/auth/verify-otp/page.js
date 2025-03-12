@@ -31,7 +31,7 @@ function VerifyOTPContent() {
   }, [timer]);
 
   const handleVerify = async () => {
-    if (otp.length !== 6) {
+    if (otp?.length !== 6) {
       toast.error("Please enter a valid 6-digit OTP.");
       return;
     }

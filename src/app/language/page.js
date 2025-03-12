@@ -47,17 +47,17 @@ const LanguageSelection = () => {
                   ? "bg-[rgba(160,0,160,0.2)] border-[rgba(106,0,106,1)] text-white"
                   : "border-gray-300 bg-white text-black"
               }`}
-              onClick={() => handleLanguageSelect(lang.code)}
+              onClick={() => handleLanguageSelect(lang?.code)}
             >
               <div className="flex items-center">
                 <span className="bg-[rgba(160,0,160,0.2)] text-purple-800 px-3 py-1 rounded-full mr-3">
-                  {lang.symbol}
+                  {lang?.symbol}
                 </span>
-                <span className="text-black">{lang.label}</span>
+                <span className="text-black">{lang?.label}</span>
               </div>
               <div
                 className={`w-5 h-5 border-2 rounded-full transition-all duration-200 ${
-                  selectedLanguage === lang.code
+                  selectedLanguage === lang?.code
                     ? "bg-[rgba(139,0,139,1)] border-[rgba(106,0,106,1)]"
                     : "border-gray-400"
                 }`}

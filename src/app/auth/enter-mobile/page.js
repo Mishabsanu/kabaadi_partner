@@ -50,7 +50,7 @@ const EnterMobileContent = () => {
             maxLength={10}
             onChange={(e) => {
               const onlyNums = e.target.value.replace(/\D/g, "");
-              setMobile(onlyNums.slice(0, 10));
+              setMobile(onlyNums?.slice(0, 10));
             }}
           />
         </div>
